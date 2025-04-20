@@ -4,7 +4,7 @@ repo_addr='crpi-g6muopbpy3n1uhbz.cn-hangzhou.personal.cr.aliyuncs.com/my-im-1/us
 tag='latest'
 
 container_name='myIm-user-rpc-test'
-network_name='myIm-network'
+network_name='myIm-network'    #使用自定义网络myIm-network
 
 docker stop ${container_name}
 
