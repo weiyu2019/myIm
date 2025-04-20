@@ -43,7 +43,7 @@ services:
       - ./components/mysql/data:/var/lib/mysql
       - /etc/localtime:/etc/localtime
     environment:
-      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: easy-chat
     restart: always
     networks:
       myIm-network:

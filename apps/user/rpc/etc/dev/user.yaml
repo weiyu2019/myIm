@@ -4,3 +4,15 @@ Etcd:
   Hosts:
   - etcd:3379
   Key: user.rpc
+
+Mysql:
+  DataSource: root:easy-chat@tcp(mysql:13306)/easy-chat?charset=utf8mb4
+
+Cache:
+  - Host: redis:16379
+    Type: node
+    Pass: easy-chat
+
+Jwt:
+  AccessSecret: myIm.com
+  AccessExpire: 8640000
