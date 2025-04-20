@@ -17,7 +17,8 @@ services:
       - ./components/etcd/data:/bitnami/etcd/data
       - ./components/etcd/logs:/bitnami/etcd/logs
     networks:
-      easy-chat:
+      myIm-network:
+        external: true
 
   redis:
     image: redis:alpine3.18
@@ -31,7 +32,8 @@ services:
       TZ: Asia/Shanghai
     restart: always
     networks:
-      easy-chat:
+      myIm-network:
+        external: true
     command: redis-server --requirepass easy-chat --appendonly yes
 
   mysql:
@@ -46,8 +48,9 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
     restart: always
     networks:
-      easy-chat:
+      myIm-network:
+        external: true
 
 networks:
-  easy-chat:
+  myIm-network:
     driver: bridge
