@@ -18,7 +18,6 @@ services:
       - ./components/etcd/logs:/bitnami/etcd/logs
     networks:
       myIm-network:
-        external: true
 
   redis:
     image: redis:alpine3.18
@@ -33,7 +32,6 @@ services:
     restart: always
     networks:
       myIm-network:
-        external: true
     command: redis-server --requirepass easy-chat --appendonly yes
 
   mysql:
@@ -49,8 +47,7 @@ services:
     restart: always
     networks:
       myIm-network:
-        external: true
 
 networks:
   myIm-network:
-    driver: bridge
+    external: true
