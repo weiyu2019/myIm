@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/rest/httpx"
+	"myIm/pkg/resultx"
 
 	"myIm/apps/user/api/internal/config"
 	"myIm/apps/user/api/internal/handler"
@@ -25,6 +27,9 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
+
+	httpx.SetErrorHandlerCtx(resultx.ErrHandle(c.Name))
+	httpx.SetOkHandler(resultx.OKHandle)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
