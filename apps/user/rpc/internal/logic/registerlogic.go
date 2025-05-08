@@ -3,11 +3,12 @@ package logic
 import (
 	"context"
 	"database/sql"
-	"errors"
+	"github.com/pkg/errors"
 	"myIm/apps/user/models"
 	"myIm/pkg/ctxdata"
 	"myIm/pkg/encrypt"
 	"myIm/pkg/wuid"
+	"myIm/pkg/xerr"
 	"time"
 
 	"myIm/apps/user/rpc/internal/svc"
@@ -17,7 +18,7 @@ import (
 )
 
 var (
-	ErrPhoneIsRegistered = errors.New("phone is registered")
+	ErrPhoneIsRegistered = xerr.New(xerr.SERVER_COMMON_ERROR, "phone is registered")
 )
 
 type RegisterLogic struct {
@@ -41,7 +42,7 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 		return nil, err
 	}
 	if userEn != nil {
-		return nil, ErrPhoneIsRegistered
+		return nil, errors.WithStack(ErrPhoneIsRegistered)
 	}
 
 	// 定义用户数据
@@ -69,14 +70,14 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 
 	_, err = l.svcCtx.UsersModel.Insert(l.ctx, userEn)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewDBErr(), "insert user err %v", err)
 	}
 
 	// 生成token
 	now := time.Now().Unix()
 	token, err := ctxdata.GetJwtToken(l.svcCtx.Config.Jwt.AccessSecret, now, l.svcCtx.Config.Jwt.AccessExpire, userEn.Id)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewInternalErr(), "get jwt token err %v", err)
 	}
 
 	return &user.RegisterResp{

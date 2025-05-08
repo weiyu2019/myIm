@@ -3,7 +3,9 @@ package logic
 import (
 	"context"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 	"myIm/apps/user/models"
+	"myIm/pkg/xerr"
 
 	"myIm/apps/user/rpc/internal/svc"
 	"myIm/apps/user/rpc/user"
@@ -41,7 +43,7 @@ func (l *FindUserLogic) FindUser(in *user.FindUserReq) (*user.FindUserResp, erro
 		userEntitys, err = l.svcCtx.UsersModel.ListByIds(l.ctx, in.Ids)
 	}
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewDBErr(), "get user info err %v", err)
 	}
 	var resp []*user.UserEntity
 	copier.Copy(&resp, userEntitys)

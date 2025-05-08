@@ -2,9 +2,10 @@ package logic
 
 import (
 	"context"
-	"errors"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 	"myIm/apps/user/models"
+	"myIm/pkg/xerr"
 
 	"myIm/apps/user/rpc/internal/svc"
 	"myIm/apps/user/rpc/user"
@@ -13,7 +14,7 @@ import (
 )
 
 var (
-	ErrUserNotFound = errors.New("user not found")
+	ErrUserNotFound = errors.Wrapf(xerr.NewDBErr(), "user not found")
 )
 
 type GetUserInfoLogic struct {
@@ -34,9 +35,9 @@ func (l *GetUserInfoLogic) GetUserInfo(in *user.GetUserInfoReq) (*user.GetUserIn
 	userEn, err := l.svcCtx.UsersModel.FindOne(l.ctx, in.Id)
 	if err != nil {
 		if err == models.ErrNotFound {
-			return nil, ErrUserNotFound
+			return nil, errors.WithStack(ErrUserNotFound)
 		}
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewDBErr(), "get user info err %v", err)
 	}
 	var resp user.UserEntity
 	copier.Copy(&resp, userEn)
