@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"myIm/pkg/interceptor/rpcserver"
 
 	"myIm/apps/user/rpc/internal/config"
 	"myIm/apps/user/rpc/internal/server"
@@ -32,6 +33,7 @@ func main() {
 			reflection.Register(grpcServer)
 		}
 	})
+	s.AddUnaryInterceptors(rpcserver.LogInterceptor)
 	defer s.Stop()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
